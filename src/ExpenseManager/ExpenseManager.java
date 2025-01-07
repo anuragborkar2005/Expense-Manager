@@ -1,6 +1,6 @@
 package ExpenseManager;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,8 +19,11 @@ public class ExpenseManager {
         while(true) {
             System.out.println("-----------------------------------------Personal Expense Manager----------------------------------");
             System.out.println("1.Add Expenses");
-            System.out.println("2.Save and Exit");
+            System.out.println("2.View Expenses");
             System.out.println("3.Generate Report");
+            System.out.println("4.Backup Data");
+            System.out.println("5.Restore Data");
+            System.out.println("6.Save and Exit");
             System.out.print("Enter your choice: ");
             int choice = input.nextInt();
             input.nextLine();
@@ -30,10 +33,19 @@ public class ExpenseManager {
                     addExpense();
                     break;
                 case 2:
-                    saveAndExit();
+                    viewExpenses();
+                    break;
+                case 4:
+                    generateBackup();
+                    break;
+                case 5:
+                    restoreBackup();
                     break;
                 case 3:
                     generateReport();
+                    break;
+                case 6:
+                    saveAndExit();
                     break;
                 default:
                     System.out.println("Invalid Choice! Try again");
@@ -41,6 +53,45 @@ public class ExpenseManager {
             }
         }
     }
+
+    private static void restoreBackup() {
+        try(BufferedReader reader = new BufferedReader(new FileReader("backup_expenses.txt"));BufferedWriter writer = new BufferedWriter(new FileWriter("expenses.txt"))){
+            String line;
+            while ((line = reader.readLine()) != null){
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("Backup restored successfully");
+        }
+        catch (IOException e){
+            System.out.println("Backup could not be restored");
+        }
+    }
+
+    private static void generateBackup(){
+        try(BufferedReader reader = new BufferedReader(new FileReader("expenses.txt"));BufferedWriter writer = new BufferedWriter(new FileWriter("backup_expenses.txt"))){
+            String line;
+            while ((line = reader.readLine()) != null){
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("Backup generated successfully");
+        }
+        catch (IOException e){
+            System.out.println("Backup could not be generated");
+        }
+    }
+
+    private static void viewExpenses() {
+        System.out.println("-----------------------------------------------------------------------------------------------------------");
+        System.out.printf("%-20s %-20s %-50s %-10s\n","Date", "Category", "Description","Amount");
+        System.out.println("-----------------------------------------------------------------------------------------------------------");
+        for(Expense expense: expenses){
+            System.out.printf("%-20s %-20s %-50s %-10.2f\n",expense.date(), expense.category(), expense.description(),expense.amount());
+        }
+        System.out.println("-----------------------------------------------------------------------------------------------------------");
+    }
+
     private static void addExpense()  {
         System.out.print("Enter Date(YYYY-MM-DD): ");
         String date = input.nextLine();
@@ -57,9 +108,9 @@ public class ExpenseManager {
     public static  void saveAndExit(){
         try {
             FileHandler.saveExpenses(expenses);
-        } catch (IOException e) {
             System.out.println("Expenses saved successfully");
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Expenses could not be saved");
         }
         System.exit(0);
     }
