@@ -1,0 +1,6 @@
+2025-01-01|Travel|Traveling to Wanadongri|250.0
+2025-01-02|Food|Lunch for Friends|250.0
+2025-01-03|Education|College Fee|94867.0
+2025-01-03|Education|Buying Stationary|500.0
+2025-01-04|Food|Dinner with Uncle|300.0
+2025-01-05|Shopping|College Uniform|3500.0
